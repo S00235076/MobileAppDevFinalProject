@@ -40,12 +40,12 @@ lv = findViewById(R.id.listview1);
         db.emptyHighscore();
         // Inserting Contacts
         Log.i("Insert: ", "Inserting ..");
-        db.addHighscore(new HighScoreClass("Seafra", 3));
-        db.addHighscore(new HighScoreClass("Jack", 8));
-        db.addHighscore(new HighScoreClass("Fiadh", 9));
-        db.addHighscore(new HighScoreClass("Tom", 3));
-        db.addHighscore(new HighScoreClass("Sinead", 0));
-        db.addHighscore(new HighScoreClass("Mariah", 3));
+        db.addHighscore(new HighScoreClass("Oran", 10));
+        db.addHighscore(new HighScoreClass("Ethan", 8));
+        db.addHighscore(new HighScoreClass("James", 9));
+        db.addHighscore(new HighScoreClass("Jake", 3));
+        db.addHighscore(new HighScoreClass("Aoife", 2));
+        db.addHighscore(new HighScoreClass("Olivia", 1));
 
         // Reading all contacts
         Log.i("Reading: ", "Reading all contacts..");
@@ -87,7 +87,7 @@ lv = findViewById(R.id.listview1);
     public void addHighScore(View view) {
         String name;
         String highscore;
-        editText = (EditText) findViewById(R.id.editTextTextPersonName);
+        editText = (EditText) findViewById(R.id.editTextPersonName);
         score = (TextView) findViewById(R.id.score);
 
         name = String.valueOf(editText.getText());
@@ -110,7 +110,7 @@ List<String> highScoresStr;
             String log = "Id: " + cn2.getID() + " ,Name: " + cn2.getName() + " ,Highscore: " +
                     cn2.getHighscore();
 
-            //
+
             highScoresStr.add(j++ + ":" +
                     cn2.getID() + "\t" +
                     cn2.getName() + "\t" +
@@ -156,12 +156,11 @@ topFiveFilter();
             String log = "Id: " + cn2.getID() + " ,Name: " + cn2.getName() + " ,Highscore: " +
                     cn2.getHighscore();
 
-            //
+
             highScoresStr.add(j++ + ":" +
 
                     cn2.getName() + "\t" +
                     cn2.getHighscore());
-            //if(cn2.getHighscore() >= )
             Log.i("Score: ", log);
 
         }
@@ -176,9 +175,6 @@ topFiveFilter();
     }
 
 
-
-
-//return to previous activty and clear task.
 
     public void nextGame(View view) {
         Intent intent = new Intent(this, MainActivity.class);

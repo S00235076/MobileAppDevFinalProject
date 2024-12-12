@@ -58,7 +58,7 @@ highScore = findViewById(R.id.listview1);
             String log = "Id: " + cn2.getID() + " ,Name: " + cn2.getName() + " ,Highscore: " +
                     cn2.getHighscore();
 
-            //
+
             highScoresStr.add(j++ + ":" +
 
                     cn2.getName() + "\t" +

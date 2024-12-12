@@ -21,10 +21,10 @@ import java.util.Random;
 public class GamePlay extends AppCompatActivity implements SensorEventListener {
     int sequenceCount = 4, n = 0;
 
-    private final int RED = 2;
-    private final int BLUE = 1;
-    private final int YELLOW = 3;
-    private final int GREEN = 4;
+    private int BLUE = 1;
+    public int RED = 2;
+    private int YELLOW = 3;
+    private int GREEN = 4;
     int score;
 
     boolean match = true;
@@ -76,7 +76,7 @@ public class GamePlay extends AppCompatActivity implements SensorEventListener {
         mSensorManager.unregisterListener(this);
     }
 
-    // ACCELEROMETER
+    // Accelerometer
     @SuppressLint("SetTextI18n")
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -87,7 +87,7 @@ public class GamePlay extends AppCompatActivity implements SensorEventListener {
             // Check if the phone is flat
             if (Math.abs(x) < 1 && Math.abs(y) < 1) {
                 if (!isFlat) {
-                    isFlat = true;  // Set flag to true when the phone is flat
+                    isFlat = true;
                 }
             }
 
@@ -101,7 +101,7 @@ public class GamePlay extends AppCompatActivity implements SensorEventListener {
                 } else if (x < -maxTilt) {
                     handleButtonPress(green, GREEN);  // Green button for up tilt
                 } else if (x > maxTilt) {
-                    handleButtonPress(yellow, YELLOW);
+                    handleButtonPress(yellow, YELLOW); // Yellow button for down tilt
                 }
             }
 
