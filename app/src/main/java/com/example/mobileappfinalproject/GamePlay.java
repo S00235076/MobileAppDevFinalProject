@@ -51,161 +51,117 @@ public class GamePlay extends AppCompatActivity implements SensorEventListener {
         blue = findViewById(R.id.blue);
         green = findViewById(R.id.green);
         yellow = findViewById(R.id.yellow);
+
+        // Get data passed from previous activity
         Intent i = getIntent();
         score = getIntent().getIntExtra("score", -1);
-
         sequenceCount = getIntent().getIntExtra("sequenceCount", -1);
         gameSequence = getIntent().getIntArrayExtra("seqArray");
 
-
+        // Setup accelerometer sensor
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-view = new View(this);
+        view = new View(this);
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mSensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
-
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
-
     }
 
-
-
-    //ACCELEROMETER
+    // ACCELEROMETER
     @SuppressLint("SetTextI18n")
     public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
 
-        float x, y, z;
-        x = event.values[0];
-        y = event.values[1];
-        z = event.values[2];
-        if (x < 1 && x > -1 && y < 1 && y > -1) if (!isFlat) {
-            isFlat = true;
-
-        }
-
-        // left tilt
-        int maxTilt = 3;
-        if (y < -maxTilt) {
-            if (isFlat) {
-                isFlat = false;
-                blue.performClick();
-                blue.setPressed(true);
-                blue.invalidate();
-                blue.setPressed(false);
-                blue.invalidate();
-            //    checkAnswer(1);
-                clickCount++;
+            // Check if the phone is flat
+            if (Math.abs(x) < 1 && Math.abs(y) < 1) {
+                if (!isFlat) {
+                    isFlat = true;  // Set flag to true when the phone is flat
+                }
             }
 
-        }
-        if (y > maxTilt) {
-
+            // Tilt detection to perform corresponding button clicks
+            int maxTilt = 3;
             if (isFlat) {
-                isFlat = false;
-                red.performClick();
-                red.setPressed(true);
-                red.invalidate();
-                red.setPressed(false);
-               red.invalidate();
-                clickCount++;
-               // checkAnswer(2);
+                if (y < -maxTilt) {
+                    handleButtonPress(blue, BLUE);  // Blue button for left tilt
+                } else if (y > maxTilt) {
+                    handleButtonPress(red, RED);  // Red button for right tilt
+                } else if (x < -maxTilt) {
+                    handleButtonPress(green, GREEN);  // Green button for up tilt
+                } else if (x > maxTilt) {
+                    handleButtonPress(yellow, YELLOW);
+                }
             }
 
-        }
-        if (x < -maxTilt) {
-            if (isFlat) {
-                isFlat = false;
-                green.performClick();
-                green.setPressed(true);
-               green.invalidate();
-               green.setPressed(false);
-               green.invalidate();
-                clickCount++;
-          //      checkAnswer(4);
-            }
-        }
 
-        if (x > maxTilt) {
-
-            if (isFlat) {
-                isFlat = false;
-                yellow.performClick();
-                yellow.setPressed(true);
-                yellow.invalidate();
-              yellow.setPressed(false);
-              yellow.invalidate();
-
-           //     checkAnswer(3);
-clickCount++;
-
-            }
             if (clickCount == gameSequence.length) {
-                Intent intent = new Intent(view.getContext(),GameOver.class);
-                intent.putExtra("score", score);
-                startActivity(intent);
-                Toast.makeText(this, "yay", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "ohno", Toast.LENGTH_SHORT).show();
+                handleGameOver();
             }
         }
-
-
     }
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    private void handleButtonPress(Button button, int color) {
+
+        button.performClick();
+        button.setPressed(true);
+        button.invalidate();
+        button.setPressed(false);
+        button.invalidate();
+
+        clickCount++;
+        checkAnswer(color);
     }
+
+    private void handleGameOver() {
+        Intent intent = new Intent(view.getContext(), GameOver.class);
+        intent.putExtra("score", score);
+        startActivity(intent);
+        Toast.makeText(this, "yay", Toast.LENGTH_SHORT).show();
+    }
+
 
     public void checkAnswer(int colorIndex) {
-
-
-
-
-             if (sequenceCount+1 < sequenceCount) {
-             if (gameSequence[sequenceCount] == colorIndex) {
-             score++;
-             tvScore.setText(String.valueOf(score));
-             sequenceCount++;
-             } else {
-             Intent intent = new Intent(view.getContext(),GameOver.class);
-             intent.putExtra("score", score);
-             startActivity(intent);
-             }
-             } else if (sequenceCount+1 >= sequenceCount)
-             {
-             if (gameSequence[sequenceCount] == colorIndex)
-             {
-             score++;
-             tvScore.setText(String.valueOf(score));
-             Intent Next = new Intent(view.getContext(), MainActivity.class);
-             MainActivity.score = score;
-             MainActivity.sequenceCount = sequenceCount+2;
-             startActivity(Next);
-             finish();
-
-             }
-             else
-             {
-             Intent go = new Intent(GamePlay.this, GameOver.class);
-             startActivity(go);
-             }
-             }
+        if (arrayIndex < sequenceCount) {
+            if (gameSequence[arrayIndex] == colorIndex) {
+                score++;
+                tvScore.setText(String.valueOf(score));
+                arrayIndex++;
+            } else {
+                handleGameOver();
+            }
         }
-        public void highscore(View view) {
+
+        if (arrayIndex == sequenceCount) {
+
+            Intent next = new Intent(GamePlay.this, MainActivity.class);
+            next.putExtra("score", score);
+            next.putExtra("sequenceCount", sequenceCount + 2);
+            startActivity(next);
+            finish();
+        }
+    }
+
+
+    public void highscore(View view) {
         Intent i = new Intent(GamePlay.this, GameOver.class);
         i.putExtra("score", String.valueOf(clickCount));
         GamePlay.this.startActivity(i);
-        }
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-
-
-
+    }
+}

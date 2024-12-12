@@ -113,29 +113,21 @@ public class MainActivity extends AppCompatActivity {
     private void oneButton() {
         n = getRandom(sequenceCount);
 
-        switch (n) {
-            case 1:
-                flashButton(blue);
-                gameSequence[arrayIndex++] = BLUE;
-                break;
-            case 2:
-                flashButton(red);
-                gameSequence[arrayIndex++] = RED;
-                break;
-            case 3:
-                flashButton(yellow);
-                gameSequence[arrayIndex++] = GREEN;
-                break;
-            case 4:
-                flashButton(green);
-                gameSequence[arrayIndex++] = YELLOW;
-                break;
-            default:
-                break;
+        if (n == 1) {
+            flashButton(blue);
+            gameSequence[arrayIndex++] = BLUE;
+        } else if (n == 2) {
+            flashButton(red);
+            gameSequence[arrayIndex++] = RED;
+        } else if (n == 3) {
+            flashButton(yellow);
+            gameSequence[arrayIndex++] = GREEN;
+        } else if (n == 4) {
+            flashButton(green);
+            gameSequence[arrayIndex++] = YELLOW;
         }
-
-
     }
+
 
 
     private void flashButton(Button fb) {
